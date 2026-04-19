@@ -2,7 +2,7 @@ import os
 import re
 from pathlib import Path
 import pandas as pd
-from PIL.Image import Image
+from PIL import Image
 from torchvision.io import decode_image
 from torch.utils.data import Dataset
 import numpy as np
@@ -13,11 +13,15 @@ class AnimalDataloader(Dataset):
         self.dataframe = dataframe
         self.transforms = transforms
 
+    def __len__(self):
+        return len(self.dataframe)
+
     def __getitem__(self, index):
         row = self.dataframe.iloc[index]
 
         base = str(row.iloc[0])
         img_path = self.data_path / f"{base}.jpg"
+
         image = Image.open(img_path).convert("RGB")
         image = np.array(image)
 
@@ -25,4 +29,5 @@ class AnimalDataloader(Dataset):
 
         if self.transforms:
             image = self.transforms(image=image)["image"]
+
         return image, label
