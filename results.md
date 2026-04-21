@@ -161,7 +161,7 @@ train_transforms = A.Compose([
 
 model: CNN2
 
-Experiment was stopped becose learning rate was way to small, example on epoch 13:\
+Experiment was stopped because learning rate was way to small, example on epoch 13:\
 Epoch 13\
 Train Loss: 3.5322, Train Acc: 0.0519\
 Val Loss: 3.4972, Val Acc: 0.0619
@@ -173,6 +173,7 @@ Val Loss: 3.4972, Val Acc: 0.0619
 - with augmentations
 - model CNN2
 - lr = 0.001
+
 lowering learning rate didn't do anything, augmenations are probably too strong 
 
 ![EXP_4.jpg](images%2FEXP_4.jpg)
@@ -358,9 +359,12 @@ balanced_accuracy: 0.5817
 ![EXP_7.jpg](images%2FEXP_7.jpg)
 
 ### conclusions:
-- metrics improved slightly 
+- metrics improved slightly, probably the deepest sensible architecture
 
 ## Experiment 8
+- with augmentations
+- model ResidualCNN
+- lr = 0.0001
 
 ```python
 class ResidualSE(nn.Module):
@@ -456,27 +460,42 @@ class ResidualCNN(nn.Module):
         x = self.classifier(x)
         return x
 ```
-=== Metrics ===
-accuracy: 0.3211
-precision_macro: 0.3287
-recall_macro: 0.3218
-f1_macro: 0.3176
-f1_weighted: 0.3170
+=== Metrics ===\
+accuracy: 0.3211\
+precision_macro: 0.3287\
+recall_macro: 0.3218\
+f1_macro: 0.3176\
+f1_weighted: 0.3170\
 balanced_accuracy: 0.3218
+
 ![EXP_8.jpg](images%2FEXP_8.jpg)
+
 ### conclusions:
+- Although architecture looks promising, network probably should be deeper for this task
+- Early stopping was activated after a lot of epochs with overfitting, probably should tweak sensitivity of early stop
 
 
 ## Experiment 9
 CNN5
-=== Metrics ===
-accuracy: 0.5190
-precision_macro: 0.5325
-recall_macro: 0.5191
-f1_macro: 0.5181
-f1_weighted: 0.5178
+=== Metrics ===\
+accuracy: 0.5190\
+precision_macro: 0.5325\
+recall_macro: 0.5191\
+f1_macro: 0.5181\
+f1_weighted: 0.5178\
 balanced_accuracy: 0.5191
 
-![EXP_9.jpg](images%2FEXP_9.jpg)
-```python
-```
+![EXP_9.jpg](images/EXP_9.jpg)
+
+### Conclusions:
+- metrics were worse compared to CNN4, it means this architecture is too deep/complex for this task and augmentations
+
+## Final Conclusions:
+Best model was CNN4 with accuracy of 0.58, it is not a satisfying result but its not tragic considering\
+the task was not that trivial with 37 classes to predict and architecture used was very basic.\
+I successfully managed to find optimal depth of the network with experiments.\
+Augmentations improved the results significantly, although i had to make them less drastic than the first approach\
+for the networks to learn properly.\
+Residual CNN seemed promising, further experiments would be needed, probably the core of the network was too small.\
+considering that f1_macro and accuracy scores were very similar in all tests models used were predicting\
+all classes with similar accuracy.

@@ -52,7 +52,7 @@ val_transforms = A.Compose([
 
 def load_data():
     df = pd.read_csv(
-        r"data/annotations/list.txt",
+        "data/annotations/list.txt",
         sep=" ",
         header=None,
         comment="#"
@@ -60,16 +60,9 @@ def load_data():
 
     df = df[[0, 1]]
     df.columns = ["image", "label"]
-    df["label"] = df["label"] - 1
 
-    class_names = (
-        df.groupby("label")["image"]
-        .first()
-        .sort_index()
-        .apply(lambda x: x.split("_")[0])
-        .tolist()
-    )
-    print(class_names)
+    df["label"] = df["label"].astype(int) - 1
+
     return df
 
 
@@ -185,7 +178,7 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_ds, batch_size=32)
 
-    model = CNN5()
+    model = CNN4()
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
@@ -215,7 +208,7 @@ if __name__ == "__main__":
         if early_stopping.early_stop:
             break
 
-    plot_training_curves(history, "EXP_9.jpg")
+    plot_training_curves(history, "EXP_00.jpg")
 
     model.load_state_dict(torch.load("best_model.pth"))
     labels, preds = get_predictions(model, val_loader, device)
